@@ -4,7 +4,7 @@ pipeline {
 		stage('Create Workspace'){
 			steps {
 			    withAnt(installation: 'Ant Installation') {
-			     bat label: '', script: 'C:\\Users\\nkontotha\\Documents\\DevOps\\ESB\\antScripts\\createWorkspace.bat C:\\Users\\nkontotha\\Documents\\DevOps\\ESB\\modules C:\\Users\\nkontotha\\Documents\\DevOps\\ESB\\workspace2 \\HOLVFOneNetOrchestratorModule'
+			     bat label: '', script: 'C:\\Users\\nkontotha\\Documents\\DevOps\\ESB\\antScripts\\createWorkspace.bat C:\\Users\\nkontotha\\Documents\\DevOps\\ESB\\modules C:\\Users\\nkontotha\\Documents\\DevOps\\ESB\\workspaceIDE\\HOLVFOneNetOrchestratorModule'
 		    	}
 			}
 		}
