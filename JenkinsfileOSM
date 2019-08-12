@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+	stages {
+		stage('Build'){
+			steps {
+			    withAnt(installation: 'Ant Installation') {
+					bat label: '', script: 'C:\\Users\\nkontotha\\Documents\\DevOps\\OSM\\INTRASOFT_SVN\\OSS\\SIT\\continuous_integration\\Migrated_NISA\\build-test2.bat'
+			        }
+		    	}
+	    	}
+		stage('Deploy'){
+			steps {
+			   echo 'ready to deploy'
+		    	}
+	    	}
+    	}
+    } 
