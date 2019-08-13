@@ -39,6 +39,7 @@ pipeline {
       steps {
         
       }
+	  }
 	stage('Checkout') {
       steps {
         checkout([
@@ -88,4 +89,4 @@ pipeline {
 			
     	}
     } 
-	}
+	
