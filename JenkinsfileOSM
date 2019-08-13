@@ -39,7 +39,7 @@ pipeline {
 	stages {
 	stage('Validate_Setup') {
       steps {
-        
+        echo 'ready to validate_setup'
       }
 	  }
 	stage('Checkout') {
@@ -80,6 +80,7 @@ pipeline {
       steps {
         //In case of scheduled execution execute the deployment at a specified time after the job is triggered
         //delayScheduledDeploy(params.SCHEDULED_BUILD_DEPLOYMENT_DELAY)
+	echo 'ready to delay'
       }
     }		
 		
