@@ -1,3 +1,5 @@
+//@Library(['utilsLib']) _
+
 def jobConfig=[
   toolIds: [
     ant: 'ant_1.10.3',
@@ -72,7 +74,7 @@ pipeline {
 					bat label: '', script: 'C:\\Users\\nkontotha\\Documents\\DevOps\\OSM\\INTRASOFT_SVN\\OSS\\SIT\\continuous_integration\\Migrated_NISA\\build-test.bat'
 			        }
 		    	}
-				archiveArtifacts allowEmptyArchive: true, artifacts: "${jobConfig.checkoutDir}/OSM/POC_OSM_TOM_Solution/cartridgeBin/POC_OSM_TOM_Solution.par"
+				//archiveArtifacts allowEmptyArchive: true, artifacts: "${jobConfig.checkoutDir}/OSM/POC_OSM_TOM_Solution/cartridgeBin/POC_OSM_TOM_Solution.par"
 	    	}
 		stage('Delay_Scheduled_Deploy') {
       steps {
