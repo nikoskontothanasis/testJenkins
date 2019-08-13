@@ -1,17 +1,92 @@
+@Library(['utilsLib']) _
+
+def jobConfig=[
+  toolIds: [
+    ant: 'ant_1.10.3',
+    jdk: 'jdk_8u172',
+    maven: 'maven_3.5.3'
+  ],
+  checkoutDir: 'CheckoutDir',
+  //The parameters of types "Extensible Choice" and "List Subversion tags" are accessed from the environment properties (e.g.: env.<parameter name>)
+  requiredEnvVariables: [
+    'SVN_FOLDER',
+    'FMW_121300_WIN',
+    'OSM_JDK_HOME',
+    'OSM_CARTRIDGE_MANAGEMENT_TOOLS',
+    'OSM_SDK_HOME_7_3_1_0_7_64',
+    'OSM_OEPE_HOME_12_2_1_6',
+    'SOAP_UI_DIR_WIN'
+  ],
+  //The parameters of other types are accessed from the "params" object (e.g. params.<parameter name>)
+  requiredParameters: [
+    'TARGET_ENV',
+    'CHECKOUT_STRATEGY',
+    'SCHEDULED_BUILD_DEPLOYMENT_DELAY'
+  ],
+  credentialIds: [
+    scm: 'internalSvn'
+  ],
+  configFileIds: []
+]
+
+def jobGlobalVars=[:]
+//Declarative
 pipeline {
     agent any
+	environment { 
+    BUILD_DIR="${WORKSPACE}/build"
+  }
 	stages {
+	stage('Validate_Setup') {
+      steps {
+        
+      }
+	stage('Checkout') {
+      steps {
+        checkout([
+          $class: 'SubversionSCM',
+          additionalCredentials: [],
+          excludedCommitMessages: '',
+          excludedRegions: '',
+          excludedRevprop: '',
+          excludedUsers: '',
+          filterChangelog: false,
+          ignoreDirPropChanges: true,
+          includedRegions: '',
+          locations: [
+            [
+              credentialsId: jobConfig.credentialIds.scm,
+              depthOption: 'infinity',
+              ignoreExternalsOption: true,
+              local: jobConfig.checkoutDir,
+              remote: "${jobConfig.svnUrl}/${env.SVN_FOLDER}"
+            ]
+          ],
+          quiet: true,
+          workspaceUpdater: [$class: "${params.CHECKOUT_STRATEGY}"]
+        ])
+      }
+    }
 		stage('Build'){
 			steps {
 			    withAnt(installation: 'Ant Installation') {
 					bat label: '', script: 'C:\\Users\\nkontotha\\Documents\\DevOps\\OSM\\INTRASOFT_SVN\\OSS\\SIT\\continuous_integration\\Migrated_NISA\\build-test.bat'
 			        }
 		    	}
+				archiveArtifacts allowEmptyArchive: true, artifacts: "${jobConfig.checkoutDir}/OSM/POC_OSM_TOM_Solution/cartridgeBin/POC_OSM_TOM_Solution.par"
 	    	}
+		stage('Delay_Scheduled_Deploy') {
+      steps {
+        //In case of scheduled execution execute the deployment at a specified time after the job is triggered
+        //delayScheduledDeploy(params.SCHEDULED_BUILD_DEPLOYMENT_DELAY)
+      }
+    }		
+		
 		stage('Deploy'){
 			steps {
 			   echo 'ready to deploy'
 		    	}
 	    	}
+			
     	}
     } 
