@@ -1,4 +1,4 @@
-//@Library(['utilsLib']) _
+@Library(['utilsLib']) _
 
 def jobConfig=[
   toolIds: [
@@ -64,7 +64,7 @@ pipeline {
           		  ]
           		],
           		quiet: true,
-         		 workspaceUpdater: [$class: "${params.CHECKOUT_STRATEGY}"]
+         		 //workspaceUpdater: [$class: "${params.CHECKOUT_STRATEGY}"]
       			  ])
       			}
    		}
