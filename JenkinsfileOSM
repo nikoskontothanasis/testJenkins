@@ -32,42 +32,42 @@ def jobConfig=[
 def jobGlobalVars=[:]
 //Declarative
 pipeline {
-    agent any
-	environment { 
-    BUILD_DIR="${WORKSPACE}/build"
-  }
+	agent any
+		environment { 
+   			 BUILD_DIR="${WORKSPACE}/build"
+  		}
 	stages {
-	stage('Validate_Setup') {
-      steps {
-        echo 'ready to validate_setup'
-      }
+		stage('Validate_Setup') {
+      			steps {
+       				 echo 'ready to validate_setup'
+      			}
 	  }
 	stage('Checkout') {
-      steps {
-        checkout([
-          $class: 'SubversionSCM',
-          additionalCredentials: [],
-          excludedCommitMessages: '',
-          excludedRegions: '',
-          excludedRevprop: '',
-          excludedUsers: '',
-          filterChangelog: false,
-          ignoreDirPropChanges: true,
-          includedRegions: '',
-          locations: [
-            [
-              credentialsId: jobConfig.credentialIds.scm,
-              depthOption: 'infinity',
-              ignoreExternalsOption: true,
-              local: jobConfig.checkoutDir,
-              remote: "${jobConfig.svnUrl}/${env.SVN_FOLDER}"
-            ]
-          ],
-          quiet: true,
-          workspaceUpdater: [$class: "${params.CHECKOUT_STRATEGY}"]
-        ])
-      }
-    }
+      		steps {
+        	checkout([
+       	  		$class: 'SubversionSCM',
+          		additionalCredentials: [],
+          		excludedCommitMessages: '',
+          		excludedRegions: '',
+          		excludedRevprop: '',
+          		excludedUsers: '',
+          		filterChangelog: false,
+          		ignoreDirPropChanges: true,
+          		includedRegions: '',
+          		locations: [
+          		  [
+          		    credentialsId: jobConfig.credentialIds.scm,
+          		    depthOption: 'infinity',
+          		    ignoreExternalsOption: true,
+          		    local: jobConfig.checkoutDir,
+          		    remote: "${jobConfig.svnUrl}/${env.SVN_FOLDER}"
+          		  ]
+          		],
+          		quiet: true,
+         		 workspaceUpdater: [$class: "${params.CHECKOUT_STRATEGY}"]
+      			  ])
+      			}
+   		}
 		stage('Build'){
 			steps {
 			    withAnt(installation: 'Ant Installation') {
