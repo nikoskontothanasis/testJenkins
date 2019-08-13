@@ -1,5 +1,3 @@
-@Library(['utilsLib']) _
-
 def jobConfig=[
   toolIds: [
     ant: 'ant_1.10.3',
