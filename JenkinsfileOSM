@@ -1,4 +1,4 @@
-@Library(['utilsLib']) _
+@Library(value='utilsLib', changelog=false) _
 
 def jobConfig=[
   toolIds: [
@@ -9,26 +9,37 @@ def jobConfig=[
   checkoutDir: 'CheckoutDir',
   //The parameters of types "Extensible Choice" and "List Subversion tags" are accessed from the environment properties (e.g.: env.<parameter name>)
   requiredEnvVariables: [
-    'SVN_FOLDER',
     'FMW_121300_WIN',
-    'OSM_JDK_HOME',
+    'OSM_JDK_HOME_1_8',
     'OSM_CARTRIDGE_MANAGEMENT_TOOLS',
-    'OSM_SDK_HOME_7_3_1_0_7_64',
-    'OSM_OEPE_HOME_12_2_1_6',
+    'OSM_SDK_HOME_7_3_5_1_2',
+    'DESIGN_STUDIO_7_3_5',
     'SOAP_UI_DIR_WIN'
   ],
   //The parameters of other types are accessed from the "params" object (e.g. params.<parameter name>)
   requiredParameters: [
     'TARGET_ENV',
+    'FULL_BUILD',
     'CHECKOUT_STRATEGY',
-    'SCHEDULED_BUILD_DEPLOYMENT_DELAY'
+    'SCHEDULED_BUILD_DEPLOYMENT_DELAY',
+    'DEPLOYMENT_NOTIFICATION_RECIPIENTS'
   ],
   credentialIds: [
-    scm: 'internalSvn'
+    scm: 'internalSvn',
+    osbJmsSsh: "${params.TARGET_ENV}_OsbJmsSsh",
+    osmAdminSsh: "${params.TARGET_ENV}_OsmAdminSsh",
+    osmAdmin: "${params.TARGET_ENV}_OsmAdmin",
+    osmAutomation: "${params.TARGET_ENV}_OsmAutomation",
+    osmDb: "${params.TARGET_ENV}_OsmDb",
+    osmWeblogicAdmin: "${params.TARGET_ENV}_OsmWeblogicAdmin"
   ],
-  configFileIds: []
+  configFileIds: [
+    jenkinsKnownHosts: 'knownHosts',
+    mavenSettingsConfigId: 'SettingsInternalNexus'
+  ]
 ]
-
+def failedStages=[]
+def jobPersistedGlobalVars=[:]
 def jobGlobalVars=[:]
 //Declarative
 pipeline {
@@ -37,59 +48,22 @@ pipeline {
    			 BUILD_DIR="${WORKSPACE}/build"
   		}
 	stages {
-		stage('Validate_Setup') {
-      			steps {
-       				 echo 'ready to validate_setup'
-      			}
-	  }
-	stage('Checkout') {
-      		steps {
-        	checkout([
-       	  		$class: 'SubversionSCM',
-          		additionalCredentials: [],
-          		excludedCommitMessages: '',
-          		excludedRegions: '',
-          		excludedRevprop: '',
-          		excludedUsers: '',
-          		filterChangelog: false,
-          		ignoreDirPropChanges: true,
-          		includedRegions: '',
-          		locations: [
-          		  [
-          		    credentialsId: jobConfig.credentialIds.scm,
-          		    depthOption: 'infinity',
-          		    ignoreExternalsOption: true,
-          		    local: jobConfig.checkoutDir,
-          		    remote: "${jobConfig.svnUrl}/${env.SVN_FOLDER}"
-          		  ]
-          		],
-          		quiet: true,
-         		 //workspaceUpdater: [$class: "${params.CHECKOUT_STRATEGY}"]
-      			  ])
-      			}
-   		}
-		stage('Build'){
-			steps {
-			    withAnt(installation: 'Ant Installation') {
-					bat label: '', script: 'C:\\Users\\nkontotha\\Documents\\DevOps\\OSM\\INTRASOFT_SVN\\OSS\\SIT\\continuous_integration\\Migrated_NISA\\build-test.bat'
-			        }
-		    	}
-				//archiveArtifacts allowEmptyArchive: true, artifacts: "${jobConfig.checkoutDir}/OSM/POC_OSM_TOM_Solution/cartridgeBin/POC_OSM_TOM_Solution.par"
-	    	}
-		stage('Delay_Scheduled_Deploy') {
+    stage('AXNE') {
       steps {
-        //In case of scheduled execution execute the deployment at a specified time after the job is triggered
-        //delayScheduledDeploy(params.SCHEDULED_BUILD_DEPLOYMENT_DELAY)
-	echo 'ready to delay'
+        script { jobPersistedGlobalVars=getPersistedGlobalVariables() }
+        
+        withAnt(
+          installation: jobConfig.toolIds.ant,
+          jdk: jobConfig.toolIds.jdk
+        )
+        {
+              script {
+                // Run ant target to create flag file in the case that at least one OSM project will be processed
+                execOsCommand("set SVN_USER=infraops && set SVN_PASSWORD=infraops1 && ant -file C:/Users/nkontotha/Documents/DevOps/OSM/INTRASOFT_SVN/OSS/SIT/continuous_integrationMigrated_NISA/antScripts/build.xml -Dprevious.svn.paths.dir=C:/temp/OSM_NISA_BLD/SvnPaths -Dprojects.dir=C:/Users/nkontotha/Documents/DevOps/OSM/INTRASOFT_SVN/OSS/SIT/Migrated_NISA_OSM -Declipse.home=C/Users/nkontotha/Documents/DevOps/OSM/Cosmote_DesignStudio_7_3_5  -Dosm.jdk.home=C:/Java/jdk1.8.0_162 -Dosm.sdk.home=C:/Users/nkontotha/Documents/DevOps/OSM/OSS_OSM_SDK -Dweblogic.home=C:/Oracle/Middleware/Oracle_Home/wlserver -Dbuild.dir=C:/temp/OSM_NISA_BLD -Dread.cached.values=false -Dmaven.dir=C:/apache-maven-3.6.1 build")
+              }
+        }
       }
-    }		
-		
-		stage('Deploy'){
-			steps {
-			   echo 'ready to deploy'
-		    	}
-	    	}
-			
-    	}
-    } 
+    }
+  }
+} 
 	
