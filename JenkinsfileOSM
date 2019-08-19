@@ -48,7 +48,7 @@ pipeline {
    			 BUILD_DIR="${WORKSPACE}/build"
   		}
 	stages {
-    stage('AXNE') {
+    stage('Main Stage') {
       steps {
         script { jobPersistedGlobalVars=getPersistedGlobalVariables() }
         
