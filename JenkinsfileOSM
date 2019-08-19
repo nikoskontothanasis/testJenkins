@@ -50,7 +50,7 @@ pipeline {
 	stages {
     stage('Main Stage') {
       steps {
-        script { jobPersistedGlobalVars=getPersistedGlobalVariables() }
+       // script { jobPersistedGlobalVars=getPersistedGlobalVariables() }
         
         withAnt(
           installation: jobConfig.toolIds.ant,
