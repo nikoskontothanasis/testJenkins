@@ -59,7 +59,7 @@ pipeline {
         {
               script {
                 // Run ant target to create flag file in the case that at least one OSM project will be processed
-                execOsCommand("set SVN_USER=infraops && set SVN_PASSWORD=infraops1 && ant -file C:/Users/nkontotha/Documents/DevOps/OSM/INTRASOFT_SVN/OSS/SIT/continuous_integrationMigrated_NISA/antScripts/build.xml -Dprevious.svn.paths.dir=C:/temp/OSM_NISA_BLD/SvnPaths -Dprojects.dir=C:/Users/nkontotha/Documents/DevOps/OSM/INTRASOFT_SVN/OSS/SIT/Migrated_NISA_OSM -Declipse.home=C/Users/nkontotha/Documents/DevOps/OSM/Cosmote_DesignStudio_7_3_5  -Dosm.jdk.home=C:/Java/jdk1.8.0_162 -Dosm.sdk.home=C:/Users/nkontotha/Documents/DevOps/OSM/OSS_OSM_SDK -Dweblogic.home=C:/Oracle/Middleware/Oracle_Home/wlserver -Dbuild.dir=C:/temp/OSM_NISA_BLD -Dread.cached.values=false -Dmaven.dir=C:/apache-maven-3.6.1 build")
+                execOsCommand("set SVN_USER=infraops && set SVN_PASSWORD=infraops1 && ant -file C:/Users/nkontotha/Documents/DevOps/OSM/INTRASOFT_SVN/OSS/SIT/continuous_integration/Migrated_NISA/antScripts/build.xml -Dprevious.svn.paths.dir=C:/temp/OSM_NISA_BLD/SvnPaths -Dprojects.dir=C:/Users/nkontotha/Documents/DevOps/OSM/INTRASOFT_SVN/OSS/SIT/Migrated_NISA_OSM -Declipse.home=C/Users/nkontotha/Documents/DevOps/OSM/Cosmote_DesignStudio_7_3_5  -Dosm.jdk.home=C:/Java/jdk1.8.0_162 -Dosm.sdk.home=C:/Users/nkontotha/Documents/DevOps/OSM/OSS_OSM_SDK -Dweblogic.home=C:/Oracle/Middleware/Oracle_Home/wlserver -Dbuild.dir=C:/temp/OSM_NISA_BLD -Dread.cached.values=false -Dmaven.dir=C:/apache-maven-3.6.1 build")
               }
         }
       }
